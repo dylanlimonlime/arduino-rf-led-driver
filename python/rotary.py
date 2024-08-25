@@ -10,7 +10,12 @@ class Encoder:
     return self.rotary_encoder.position != self.last_position
   
   def update_position(self):
-    self.last_position = self.rotary_encoder.position
+    if self.rotary_encoder.position > MAX_POSITION:
+      self.last_position = MAX_POSITION
+    elif self.rotary_encoder.position < MIN_POSITION:
+      self.last_position = MIN_POSITION
+    else:
+      self.last_position = self.rotary_encoder.position
 
   @property
   def last_position(self):
