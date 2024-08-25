@@ -1,17 +1,8 @@
+import constants
 import time
 from adafruit_neotrellis.neotrellis import NeoTrellis
 
 NUM_KEY_PADS = 16
-
-# Color constants
-OFF     = (0, 0, 0)
-RED     = (255, 0, 0)
-YELLOW  = (255, 150, 0)
-GREEN   = (0, 255, 0)
-CYAN    = (0, 255, 255)
-BLUE    = (0, 0, 255)
-PURPLE  = (180, 0, 255)
-
 
 INIT_DELAY_SECONDS = 0.05  # 50 ms
 
@@ -23,22 +14,25 @@ class Keypad:
     # API doc: https://docs.circuitpython.org/projects/neotrellis/en/latest/api.html#adafruit_neotrellis.neotrellis.NeoTrellis
     self.trellis = NeoTrellis(i2c_bus, neo_trellis_addr)
 
-  def blink(self, event):
-    if event.edge == NeoTrellis.EDGE_RISING:
-      self.trellis.pixels[event.number] = CYAN
-    elif event.edge == NeoTrellis.EDGE_FALLING:
-      self.trellis.pixels[event.number] = OFF
+  def keypad_callback(self, event):
+    if event.edge == NeoTrellis.EDGE_FALLING:
+      self.trellis.pixels[event.number] = constants.OFF
+    elif if event.edge == NeoTrellis.EDGE_RISING:
+      self.trellis.pixels[event.number] = constants.GREEN
 
-  def initialize_key_handlers(self):
+    return self.trellis.pixels[event.number]
+      
+
+  def initialize_key_handlers(self, transmit_signal_callback):
     for i in range(NUM_KEY_PADS):
       self.trellis.activate_key(i, NeoTrellis.EDGE_RISING)
       self.trellis.activate_key(i, NeoTrellis.EDGE_FALLING)
-      self.trellis.callbacks[i] = self.blink
+      self.trellis.callbacks[i] = lambda event: transmit_signal_callback(event, self.keypad_callback)
 
-      self.trellis.pixels[i] = PURPLE
+      self.trellis.pixels[i] = constants.PURPLE
       time.sleep(INIT_DELAY_SECONDS)
 
     for i in range(NUM_KEY_PADS):
-      self.trellis.pixels[i] = OFF
+      self.trellis.pixels[i] = constants.OFF
       time.sleep(INIT_DELAY_SECONDS)
     
