@@ -1,10 +1,11 @@
 import constants
 
-def normalize_alpha(rotary_position):
-  # bounds (-inf, inf)? normalize range into [0, 1] for RGBA
+def normalize_alpha(rotary_position, min_position, max_position):
+  # normalize range so it starts at 0
+  new_max_position = max_position + -(min_position)
+  new_min_position = 0
 
-  #TODO
-  return 1
+  return round(rotary_position / new_max_position, 2)
 
 def set_alpha_bytes(alpha_value) # [0, 1.0]
   # set normalize on a scale of 100
@@ -56,9 +57,11 @@ class AnimationDecoder:
       signal = fx.name
       signal += constants.SIGNAL_DELIMITER
 
-      rotary_encoder_position = self.rotary_encoder._last_position
-      
-      alpha_value = normalize_alpha(rotary_encoder_position)
+      rotary_encoder_position = self.rotary_encoder.last_position
+      rotary_encoder_min_val  = self.rotary_encoder.MIN_POSITION
+      rotary_encoder_max_val  = self.rotary_encoder.MAX_POSITION
+
+      alpha_value = normalize_alpha(rotary_encoder_position, rotary_encoder_min_val, rotary_encoder_max_val)
       alpha_int = int(alpha_value * 100)
 
       signal += alpha_int
