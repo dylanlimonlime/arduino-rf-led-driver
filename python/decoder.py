@@ -43,9 +43,9 @@ class AnimationDecoder:
     self.keypad_event = value
 
   def query_rotary_position(self):
-    # TODO: check rotary_encoder
-
-    self.did_update = True
+    if self.rotary_encoder.is_new_position():
+      self.rotary_encoder.update_position()
+      self.did_update = True
 
   # max single message length is 252 bytes 
   # I don't ever expect this function to exceed that but just in case, 
@@ -56,7 +56,9 @@ class AnimationDecoder:
       signal = fx.name
       signal += constants.SIGNAL_DELIMITER
 
-      alpha_value = normalize_alpha(self.rotary_encoder.last_position)
+      rotary_encoder_position = self.rotary_encoder._last_position
+      
+      alpha_value = normalize_alpha(rotary_encoder_position)
       alpha_int = int(alpha_value * 100)
 
       signal += alpha_int
