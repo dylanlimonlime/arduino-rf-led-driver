@@ -1,4 +1,5 @@
 import constants
+
 def normalize_alpha(rotary_position):
   # bounds (-inf, inf)? normalize range into [0, 1] for RGBA
 
@@ -8,10 +9,10 @@ def normalize_alpha(rotary_position):
 def set_alpha_bytes(alpha_value) # [0, 1.0]
   # set normalize on a scale of 100
   
-  return '%02x' % alpha_int
+  return '%02X' % alpha_int
 
 def convert_rgb_to_hex_bytes(rgb_tuple):
-  return '%02x%02x%02x' % rgb_tuple
+  return '%02X%02X%02X' % rgb_tuple
 
 class AnimationDecoder:
 
@@ -46,22 +47,26 @@ class AnimationDecoder:
 
     self.did_update = True
 
-  
+  # max single message length is 252 bytes 
+  # I don't ever expect this function to exceed that but just in case, 
+  # may want to add guard for string length on the color_signal
   def create_message(self):
       fx = constants.FX_MAP[self._keypad_event]
       
       signal = fx.name
-      signal += ';'
-      
-
-      # TODO: finish signal formatting
-      # alpha + rgb iteration
+      signal += constants.SIGNAL_DELIMITER
 
       alpha_value = normalize_alpha(self.rotary_encoder.last_position)
       alpha_int = int(alpha_value * 100)
 
+      signal += alpha_int
+      signal += constants.SIGNAL_DELIMITER
 
+      colors = [convert_rgb_to_hex_bytes(rgb) for rgb in fx.rgb]
 
+      color_signal = ','.join(colors)
+      signal += color_signal
+      signal += SIGNAL_DELIMITER
 
       self.did_update = False
       return signal
