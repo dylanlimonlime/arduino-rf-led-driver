@@ -57,6 +57,9 @@ class AnimationDecoder:
       signal = fx.name
       signal += constants.SIGNAL_DELIMITER
 
+      if fx.name == 'stop':
+        return signal
+
       rotary_encoder_position = self.rotary_encoder.last_position
       rotary_encoder_min_val  = self.rotary_encoder.MIN_POSITION
       rotary_encoder_max_val  = self.rotary_encoder.MAX_POSITION
