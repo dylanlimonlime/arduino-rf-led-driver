@@ -78,7 +78,7 @@ FX_MAP = {
     rgb: [PURPLE]
   },
   16: {
-    name: 'animation1',
-    rgb: [PURPLE]
+    name: 'stop',
+    rgb: []
   }
 }
