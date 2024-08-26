@@ -15,7 +15,7 @@ class RadioSender:
     self.animation_decoder.query_rotary_position()
     if keypad_callback(event) != constants.OFF or self.animation_decoder.did_update:
       keypad_index = event.number
-      if keypad_index != self.animation_decoder.current_keypad_event:
+      if keypad_index != self.animation_decoder.keypad_event:
         self.animation_decoder.set_keypad_event(keypad_index)
 
       self.transreceiver.send_with_ack(self.animation_decoder.create_message())

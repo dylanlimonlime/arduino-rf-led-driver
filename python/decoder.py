@@ -52,7 +52,7 @@ class AnimationDecoder:
   # I don't ever expect this function to exceed that but just in case, 
   # may want to add guard for string length on the color_signal
   def create_message(self):
-      fx = constants.FX_MAP[self._keypad_event]
+      fx = constants.FX_MAP[self.keypad_event]
       
       signal = fx.name
       signal += constants.SIGNAL_DELIMITER
